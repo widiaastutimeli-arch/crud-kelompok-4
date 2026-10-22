@@ -89,8 +89,14 @@ class SiswaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+
+public function destroy(string $id)
+{
+    $siswa = Siswa::findOrFail($id);
+    $siswa->delete();
+
+    return redirect()->route('siswa.index')
+        ->with('success', 'Data siswa berhasil dihapus.');
+}
+
 }
