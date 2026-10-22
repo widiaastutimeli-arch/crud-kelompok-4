@@ -59,17 +59,33 @@ class SiswaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $siswa = Siswa::findOrFail($id);
+
+    return view('siswa.edit', compact('siswa'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
-    }
+{
+    $siswa = Siswa::findOrFail($id);
 
+    $request->validate([
+        'nis' => 'required|unique:siswas,nis,' . $siswa->id,
+        'nama' => 'required',
+        'kelas' => 'required',
+        'jurusan' => 'required',
+        'tanggal_lahir' => 'required|date',
+        'alamat' => 'required',
+        'keterangan' => 'nullable',
+    ]);
+
+    $siswa->update($request->all());
+
+    return redirect()->route('siswa.index')
+        ->with('success', 'Data siswa berhasil diperbarui.');
+}
     /**
      * Remove the specified resource from storage.
      */
