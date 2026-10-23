@@ -20,7 +20,7 @@ public function index()
             $q->where('nama', 'like', "%{$search}%")
               ->orWhere('nis', 'like', "%{$search}%");
         });
-    })->latest()->get();
+    })->latest()->paginate(10)->withQueryString();
 
     return view('siswa.index', compact('siswas', 'search'));
 }

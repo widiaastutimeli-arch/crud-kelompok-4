@@ -227,6 +227,13 @@
                 @endforelse
             </tbody>
         </table>
+        <div style="display:flex; gap:8px; margin-top:20px;">
+    @foreach ($siswas->getUrlRange(1, $siswas->lastPage()) as $page => $url)
+        <a href="{{ $url }}" style="padding:8px 12px; border-radius:5px; background:{{ $siswas->currentPage() == $page ? '#2563eb' : '#e2e8f0' }}; color:{{ $siswas->currentPage() == $page ? 'white' : '#334155' }}; text-decoration:none;">
+            {{ $page }}
+        </a>
+    @endforeach
+</div>
     </div>
 </body>
 </html>
