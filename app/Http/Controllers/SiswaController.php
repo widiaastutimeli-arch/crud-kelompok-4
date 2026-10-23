@@ -10,12 +10,20 @@ class SiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $siswas = Siswa::latest()->get();
 
-    return view('siswa.index', compact('siswas'));
-    }
+public function index()
+{
+    $search = request('search');
+
+    $siswas = Siswa::when($search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nama', 'like', "%{$search}%")
+              ->orWhere('nis', 'like', "%{$search}%");
+        });
+    })->latest()->get();
+
+    return view('siswa.index', compact('siswas', 'search'));
+}
 
     /**
      * Show the form for creating a new resource.

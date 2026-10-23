@@ -158,13 +158,26 @@
             </div>
         @endif
 
-        <div class="top-bar">
-            <span>Daftar Seluruh Siswa</span>
+<div class="top-bar">
+    <span>Daftar Seluruh Siswa</span>
 
-            <a href="{{ route('siswa.create') }}" class="btn">
-                + Tambah Siswa
-            </a>
-        </div>
+    <a href="{{ route('siswa.create') }}" class="btn">
+        + Tambah Siswa
+    </a>
+</div>
+
+<form action="{{ route('siswa.index') }}" method="GET" style="margin-bottom: 20px;">
+    <input
+        type="text"
+        name="search"
+        placeholder="Cari nama atau NIS siswa..."
+        value="{{ $search ?? '' }}"
+        style="padding: 10px; width: 250px; border: 1px solid #cbd5e1; border-radius: 5px;"
+    >
+
+    <button class="btn" type="submit">Cari</button>
+<a href="{{ route('siswa.index') }}" class="btn" style="background:#db0d0d">Reset</a>
+</form>
 
         <table>
             <thead>
