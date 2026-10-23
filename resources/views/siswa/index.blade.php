@@ -223,8 +223,6 @@
                         <th>Tanggal Lahir</th>
                         <th>Alamat</th>
                         <th>Keterangan</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -240,8 +238,6 @@
                             <td>{{ $siswa->tanggal_lahir }}</td>
                             <td>{{ $siswa->alamat }}</td>
                             <td>{{ $siswa->keterangan ?? '-' }}</td>
-                            <td>{{ $siswa->created_at }}</td>
-                            <td>{{ $siswa->updated_at }}</td>
 
                             <td class="aksi">
                                 <a href="{{ route('siswa.show', $siswa->id) }}"
@@ -266,7 +262,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11">Belum ada data siswa.</td>
+                            <td colspan="9">Belum ada data siswa.</td>
                         </tr>
                     @endforelse
                 </tbody>
