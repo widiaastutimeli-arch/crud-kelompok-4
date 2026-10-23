@@ -56,8 +56,14 @@
             background: #1d4ed8;
         }
 
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
+            min-width: 1500px;
             border-collapse: collapse;
         }
 
@@ -65,11 +71,13 @@
             padding: 12px;
             border: 1px solid #e2e8f0;
             text-align: left;
+            vertical-align: middle;
         }
 
         th {
             background: #2563eb;
             color: white;
+            white-space: nowrap;
         }
 
         tr:hover {
@@ -125,6 +133,27 @@
             border-radius: 5px;
         }
 
+        .pagination {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+        }
+
+        .pagination a.active {
+            background: #2563eb;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -132,7 +161,6 @@
 
             .container {
                 padding: 15px;
-                overflow-x: auto;
             }
 
             .top-bar {
@@ -140,8 +168,9 @@
                 flex-direction: column;
             }
 
-            table {
-                min-width: 750px;
+            form input[type="text"] {
+                max-width: 100%;
+                box-sizing: border-box;
             }
         }
     </style>
@@ -158,82 +187,112 @@
             </div>
         @endif
 
-<div class="top-bar">
-    <span>Daftar Seluruh Siswa</span>
+        <div class="top-bar">
+            <span>Daftar Seluruh Siswa</span>
 
-    <a href="{{ route('siswa.create') }}" class="btn">
-        + Tambah Siswa
-    </a>
-</div>
+            <a href="{{ route('siswa.create') }}" class="btn">
+                + Tambah Siswa
+            </a>
+        </div>
 
-<form action="{{ route('siswa.index') }}" method="GET" style="margin-bottom: 20px;">
-    <input
-        type="text"
-        name="search"
-        placeholder="Cari nama atau NIS siswa..."
-        value="{{ $search ?? '' }}"
-        style="padding: 10px; width: 250px; border: 1px solid #cbd5e1; border-radius: 5px;"
-    >
+        <form action="{{ route('siswa.index') }}" method="GET"
+              style="margin-bottom: 20px;">
+            <input
+                type="text"
+                name="search"
+                placeholder="Cari nama atau NIS siswa..."
+                value="{{ $search ?? '' }}"
+                style="padding: 10px; width: 250px; border: 1px solid #cbd5e1; border-radius: 5px;"
+            >
 
-    <button class="btn" type="submit">Cari</button>
-<a href="{{ route('siswa.index') }}" class="btn" style="background:#db0d0d">Reset</a>
-</form>
+            <button class="btn" type="submit">Cari</button>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>NIS</th>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Jurusan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
+            <a href="{{ route('siswa.index') }}"
+               class="btn" style="background:#dc2626;">Reset</a>
+        </form>
 
-            <tbody>
-                @forelse ($siswas as $siswa)
+        <div class="table-wrapper">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $siswa->nis }}</td>
-                        <td>{{ $siswa->nama }}</td>
-                        <td>{{ $siswa->kelas }}</td>
-                        <td>{{ $siswa->jurusan }}</td>
-                        <td class="aksi">
-                            <a href="{{ route('siswa.show', $siswa->id) }}"
-                               class="btn-detail">Detail</a>
-
-                            <a href="{{ route('siswa.edit', $siswa->id) }}"
-                               class="btn-edit">Edit</a>
-
-                            <form
-                                action="{{ route('siswa.destroy', $siswa->id) }}"
-                                method="POST"
-                                style="display: inline;"
-                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-
-                                <button type="submit" class="btn-hapus">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
+                        <th>No.</th>
+                        <th>NIS</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Jurusan</th>
+                        <th>Tanggal Lahir</th>
+                        <th>Alamat</th>
+                        <th>Keterangan</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6">Belum ada data siswa.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-        <div style="display:flex; gap:8px; margin-top:20px;">
-    @foreach ($siswas->getUrlRange(1, $siswas->lastPage()) as $page => $url)
-        <a href="{{ $url }}" style="padding:8px 12px; border-radius:5px; background:{{ $siswas->currentPage() == $page ? '#2563eb' : '#e2e8f0' }}; color:{{ $siswas->currentPage() == $page ? 'white' : '#334155' }}; text-decoration:none;">
-            {{ $page }}
-        </a>
-    @endforeach
-</div>
+                </thead>
+
+                <tbody>
+                    @forelse ($siswas as $siswa)
+                        <tr>
+                            <td>{{ $siswas->firstItem() + $loop->index }}</td>
+                            <td>{{ $siswa->nis }}</td>
+                            <td>{{ $siswa->nama }}</td>
+                            <td>{{ $siswa->kelas }}</td>
+                            <td>{{ $siswa->jurusan }}</td>
+                            <td>{{ $siswa->tanggal_lahir }}</td>
+                            <td>{{ $siswa->alamat }}</td>
+                            <td>{{ $siswa->keterangan ?? '-' }}</td>
+                            <td>{{ $siswa->created_at }}</td>
+                            <td>{{ $siswa->updated_at }}</td>
+
+                            <td class="aksi">
+                                <a href="{{ route('siswa.show', $siswa->id) }}"
+                                   class="btn-detail">Detail</a>
+
+                                <a href="{{ route('siswa.edit', $siswa->id) }}"
+                                   class="btn-edit">Edit</a>
+
+                                <form
+                                    action="{{ route('siswa.destroy', $siswa->id) }}"
+                                    method="POST"
+                                    style="display: inline;"
+                                    onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn-hapus">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="11">Belum ada data siswa.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            @if ($siswas->onFirstPage())
+                <span style="padding:8px 12px; color:#94a3b8;">Previous</span>
+            @else
+                <a href="{{ $siswas->previousPageUrl() }}">Previous</a>
+            @endif
+
+            @foreach ($siswas->getUrlRange(1, $siswas->lastPage()) as $page => $url)
+                <a href="{{ $url }}"
+                   class="{{ $siswas->currentPage() == $page ? 'active' : '' }}">
+                    {{ $page }}
+                </a>
+            @endforeach
+
+            @if ($siswas->hasMorePages())
+                <a href="{{ $siswas->nextPageUrl() }}">Next</a>
+            @else
+                <span style="padding:8px 12px; color:#94a3b8;">Next</span>
+            @endif
+        </div>
     </div>
 </body>
 </html>
