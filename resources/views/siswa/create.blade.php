@@ -44,20 +44,20 @@
         }
 
         .btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100px;
-    height: 40px;
-    margin-top: 20px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 14px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100px;
+            height: 40px;
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .simpan {
@@ -66,6 +66,12 @@
 
         .kembali {
             background: #64748b;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -78,39 +84,64 @@
             @csrf
 
             <label for="nis">NIS</label>
-            <input type="text" id="nis" name="nis" required>
+            <input type="text" id="nis" name="nis"
+                   value="{{ old('nis') }}" required>
+            @error('nis')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="nama">Nama Siswa</label>
-            <input type="text" id="nama" name="nama" required>
+            <input type="text" id="nama" name="nama"
+                   value="{{ old('nama') }}" required>
+            @error('nama')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="kelas">Kelas</label>
             <input type="text" id="kelas" name="kelas"
-                   placeholder="Contoh: X PPLG C" required>
+                   placeholder="Contoh: X PPLG C"
+                   value="{{ old('kelas') }}" required>
+            @error('kelas')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="jurusan">Jurusan</label>
             <select id="jurusan" name="jurusan" required>
                 <option value="">-- Pilih Jurusan --</option>
-                <option value="PPLG">PPLG</option>
-                <option value="ULP">ULP</option>
-                <option value="TGP">TGP</option>
-                <option value="ELKA">ELKA</option>
-                <option value="TKIN">TKIN</option>
-                <option value="TJKT">TJKT</option>
-                <option value="OTO">OTO</option>
-                <option value="BC">BC</option>
+                <option value="PPLG" {{ old('jurusan') == 'PPLG' ? 'selected' : '' }}>PPLG</option>
+                <option value="ULP" {{ old('jurusan') == 'ULP' ? 'selected' : '' }}>ULP</option>
+                <option value="TGP" {{ old('jurusan') == 'TGP' ? 'selected' : '' }}>TGP</option>
+                <option value="ELKA" {{ old('jurusan') == 'ELKA' ? 'selected' : '' }}>ELKA</option>
+                <option value="TKIN" {{ old('jurusan') == 'TKIN' ? 'selected' : '' }}>TKIN</option>
+                <option value="TJKT" {{ old('jurusan') == 'TJKT' ? 'selected' : '' }}>TJKT</option>
+                <option value="OTO" {{ old('jurusan') == 'OTO' ? 'selected' : '' }}>OTO</option>
+                <option value="BC" {{ old('jurusan') == 'BC' ? 'selected' : '' }}>BC</option>
             </select>
+            @error('jurusan')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="tanggal_lahir">Tanggal Lahir</label>
             <input type="date" id="tanggal_lahir"
-                   name="tanggal_lahir" required>
+                   name="tanggal_lahir"
+                   value="{{ old('tanggal_lahir') }}" required>
+            @error('tanggal_lahir')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="alamat">Alamat</label>
             <textarea id="alamat" name="alamat"
-                      rows="3" required></textarea>
+                      rows="3" required>{{ old('alamat') }}</textarea>
+            @error('alamat')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <label for="keterangan">Keterangan</label>
             <textarea id="keterangan" name="keterangan"
-                      rows="3"></textarea>
+                      rows="3">{{ old('keterangan') }}</textarea>
+            @error('keterangan')
+                <div class="error">{{ $message }}</div>
+            @enderror
 
             <button type="submit" class="btn simpan">
                 Simpan
@@ -122,4 +153,3 @@
     </div>
 </body>
 </html>
-
