@@ -10,20 +10,19 @@ class SiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function index()
+    {
+        $search = request('search');
 
-public function index()
-{
-    $search = request('search');
+        $siswas = Siswa::when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%");
+            });
+        })->latest()->paginate(10)->withQueryString();
 
-    $siswas = Siswa::when($search, function ($query, $search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('nama', 'like', "%{$search}%")
-              ->orWhere('nis', 'like', "%{$search}%");
-        });
-    })->latest()->paginate(10)->withQueryString();
-
-    return view('siswa.index', compact('siswas', 'search'));
-}
+        return view('siswa.index', compact('siswas', 'search'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -38,20 +37,20 @@ public function index()
      */
     public function store(Request $request)
     {
-        $request->validate([
-        'nis' => 'required|unique:siswas,nis',
-        'nama' => 'required',
-        'kelas' => 'required',
-        'jurusan' => 'required',
-        'tanggal_lahir' => 'required|date',
-        'alamat' => 'required',
-        'keterangan' => 'nullable',
-    ]);
+        $validated = $request->validate([
+            'nis' => ['required', 'unique:siswas,nis'],
+            'nama' => ['required', 'string', 'max:255'],
+            'kelas' => ['required', 'string', 'max:255'],
+            'jurusan' => ['required', 'string', 'max:255'],
+            'tanggal_lahir' => ['required', 'date'],
+            'alamat' => ['required', 'string'],
+            'keterangan' => ['nullable', 'string'],
+        ]);
 
-    Siswa::create($request->all());
+        Siswa::create($validated);
 
-    return redirect()->route('siswa.index')
-        ->with('success', 'Data siswa berhasil ditambahkan.');
+        return redirect()->route('siswa.index')
+            ->with('success', 'Data siswa berhasil ditambahkan.');
     }
 
     /**
@@ -61,7 +60,7 @@ public function index()
     {
         $siswa = Siswa::findOrFail($id);
 
-    return view('siswa.show', compact('siswa'));
+        return view('siswa.show', compact('siswa'));
     }
 
     /**
@@ -71,42 +70,41 @@ public function index()
     {
         $siswa = Siswa::findOrFail($id);
 
-    return view('siswa.edit', compact('siswa'));
+        return view('siswa.edit', compact('siswa'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $siswa = Siswa::findOrFail($id);
+    {
+        $siswa = Siswa::findOrFail($id);
 
-    $request->validate([
-        'nis' => 'required|unique:siswas,nis,' . $siswa->id,
-        'nama' => 'required',
-        'kelas' => 'required',
-        'jurusan' => 'required',
-        'tanggal_lahir' => 'required|date',
-        'alamat' => 'required',
-        'keterangan' => 'nullable',
-    ]);
+        $validated = $request->validate([
+            'nis' => ['required', 'unique:siswas,nis,' . $siswa->id],
+            'nama' => ['required', 'string', 'max:255'],
+            'kelas' => ['required', 'string', 'max:255'],
+            'jurusan' => ['required', 'string', 'max:255'],
+            'tanggal_lahir' => ['required', 'date'],
+            'alamat' => ['required', 'string'],
+            'keterangan' => ['nullable', 'string'],
+        ]);
 
-    $siswa->update($request->all());
+        $siswa->update($validated);
 
-    return redirect()->route('siswa.index')
-        ->with('success', 'Data siswa berhasil diperbarui.');
-}
+        return redirect()->route('siswa.index')
+            ->with('success', 'Data siswa berhasil diperbarui.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
+    public function destroy(string $id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        $siswa->delete();
 
-public function destroy(string $id)
-{
-    $siswa = Siswa::findOrFail($id);
-    $siswa->delete();
-
-    return redirect()->route('siswa.index')
-        ->with('success', 'Data siswa berhasil dihapus.');
-}
-
+        return redirect()->route('siswa.index')
+            ->with('success', 'Data siswa berhasil dihapus.');
+    }
 }
